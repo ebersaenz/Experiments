@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\ebers\Desktop\glfw-3.3.9\CMakeFiles\a09303f5b25c91bc2dd71013861a4027\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{C330A81C-3068-3F00-9049-6C880A3BCD43}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
