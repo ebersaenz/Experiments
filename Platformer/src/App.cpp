@@ -1,3 +1,26 @@
 
+#include "../headers/Renderer.h"
 
-// TODO: 1) bring main funcition here. 2) wrap everything in Renderer in a Renderer class 3) Create a controls file+class to handle input and add it to the game loop
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    int windowWidth = 800;
+    int windowHeight = 600;
+
+    GLFWwindow* window = ES::CreateAppWindow(windowWidth, windowHeight, "Platformer");
+
+    if (window == NULL)
+    {
+        fprintf(stdout, "No window\n");
+        return 0;
+    }
+
+    Renderer renderer;
+    renderer.startup(windowWidth, windowHeight);
+    renderer.runGameLoop(window);
+    renderer.shutdown();
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+
+    return 0;
+}
