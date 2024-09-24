@@ -7,9 +7,11 @@ private:
     GLuint program;
     GLuint vao;
     GLuint buffer;
-    GLint mv_location;
+    GLint model_location;
+    GLint view_location;
     GLint proj_location;
     vmath::mat4 proj_matrix;
+    vmath::vec3 camera_position;
 
     GLuint load(const char* filename, GLenum shader_type);
     void loadShaders();

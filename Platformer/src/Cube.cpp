@@ -59,7 +59,8 @@ inline void Cube::loadShaders()
 inline void Cube::startup() {
     loadShaders();
 
-    mv_location = glGetUniformLocation(program, "mv_matrix");
+    model_location = glGetUniformLocation(program, "model_matrix");
+    view_location = glGetUniformLocation(program, "view_matrix");
     proj_location = glGetUniformLocation(program, "proj_matrix");
 
     glCreateVertexArrays(1, &vao);
@@ -153,15 +154,15 @@ inline void Cube::render(double currentTime) {
 
     glUniformMatrix4fv(proj_location, 1, GL_FALSE, proj_matrix);
 
-    float f = (float)currentTime * 0.3f;
-    vmath::mat4 mv_matrix = vmath::translate(0.0f, 0.0f, -4.0f) *
-        /*vmath::translate(sinf(2.1f * f) * 0.5f,
-        cosf(1.7f * f) * 0.5f,
-        sinf(1.3f * f) * cosf(1.5f * f) * 2.0f);*/// *
-        vmath::rotate((float)currentTime * 45.0f, 0.0f, 1.0f, 0.0f) *
-        vmath::rotate((float)currentTime * 45.0f, 1.0f, 0.0f, 0.0f);
+    vmath::mat4 model_matrix = vmath::translate(0.0f, 0.0f, -4.0f);    
+    glUniformMatrix4fv(model_location, 1, GL_FALSE, model_matrix);
 
-    glUniformMatrix4fv(mv_location, 1, GL_FALSE, mv_matrix);
+    vmath::vec3 cameraPos = vmath::vec3(0.0f, 0.0f, 3.0f);
+    vmath::vec3 cameraTarget = vmath::vec3(0.0f, 0.0f, 0.0f);
+    vmath::vec3 cameraUp = vmath::vec3(0.0f, 1.0f, 0.0f);
+    vmath::mat4 view_matrix = vmath::lookat(cameraPos, cameraTarget, cameraUp);
+    glUniformMatrix4fv(view_location, 1, GL_FALSE, view_matrix);
+
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 

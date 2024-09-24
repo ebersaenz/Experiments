@@ -7,10 +7,6 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     c.windowWidth = 800;
     c.windowHeight = 600;
 
-    // TODO: Remove
-    std::string s = "\n\ntest\n";
-    OutputDebugStringA(s.c_str());
-
     GLFWwindow* window = ES::CreateAppWindow(c.windowWidth, c.windowHeight, "Platformer");
 
     if (window == NULL)
