@@ -2,13 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\Cube.cpp" />
-    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\App.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Cube.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\cube.fs.glsl" />
-    <None Include="shaders\cube.vs.glsl" />
+    <None Include="shaders\basic.fs.glsl" />
+    <None Include="shaders\basic.vs.glsl" />
   </ItemGroup>
 </Project>

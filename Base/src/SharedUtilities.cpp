@@ -32,4 +32,43 @@ namespace ES {
 
         return window;
     }
+
+    GLuint LoadShader(const char* filename, GLenum shader_type)
+    {
+        GLuint result = 0;
+        FILE* fp;
+        size_t filesize;
+        char* data;
+
+        fp = fopen(filename, "rb");
+
+        if (!fp)
+            return 0;
+
+        fseek(fp, 0, SEEK_END);
+        filesize = ftell(fp);
+        fseek(fp, 0, SEEK_SET);
+
+        data = new char[filesize + 1];
+
+        if (!data)
+            return result;
+
+        fread(data, 1, filesize, fp);
+        data[filesize] = 0;
+        fclose(fp);
+
+        result = glCreateShader(shader_type);
+
+        if (!result)
+            return result;
+
+        glShaderSource(result, 1, &data, NULL);
+
+        delete[] data;
+
+        glCompileShader(result);
+
+        return result;
+    }
 };

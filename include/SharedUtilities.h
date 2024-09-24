@@ -11,5 +11,6 @@
 
 namespace ES
 {    
-    GLFWwindow* CreateAppWindow(int, int, const char*);
+    GLFWwindow* CreateAppWindow(int width, int height, const char* name);
+    GLuint LoadShader(const char* filename, GLenum shader_type);
 }
