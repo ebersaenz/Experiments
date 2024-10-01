@@ -568,6 +568,8 @@
   <ItemGroup>
     <None Include="shaders\basic.fs.glsl" />
     <None Include="shaders\basic.vs.glsl" />
+    <None Include="shaders\textured.fs.glsl" />
+    <None Include="shaders\textured.vs.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

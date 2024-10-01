@@ -10,6 +10,8 @@
     <ClInclude Include="headers\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\textured.fs.glsl" />
+    <None Include="shaders\textured.vs.glsl" />
     <None Include="shaders\basic.fs.glsl" />
     <None Include="shaders\basic.vs.glsl" />
   </ItemGroup>
