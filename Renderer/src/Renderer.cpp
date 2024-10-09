@@ -251,11 +251,8 @@ GLuint Renderer::loadEmbededTexture(aiMaterial* material, const aiScene* scene, 
         std::string path = texturePath.C_Str();
         if (currentModelTextureIds.find(path) != currentModelTextureIds.end())
         {
-            OutputDebugStringA(("reusing texture" + std::to_string(++tempCounter) + "\n").c_str());
             return currentModelTextureIds[path];
         }
-
-        OutputDebugStringA("using new texture\n");
 
         int textureIndex = std::atoi(&path[1]); // Get texture index
         aiTexture* texture = scene->mTextures[textureIndex];   // Get embedded texture
