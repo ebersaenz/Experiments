@@ -17,6 +17,7 @@ void Renderer::startup(int width, int height) {
     hasDiffuseLocation = glGetUniformLocation(texturedShaderProgram, "hasDiffuse");
 
     float aspect = windowWidth / windowHeight;
+    float aspect = (float) windowWidth / (float) windowHeight;
     projMatrix = vmath::perspective(50.0f, aspect, 0.1f, 1000.0f);
 
     vmath::vec3 cameraPos = vmath::vec3(0.0f, 0.0f, 3.0f);
