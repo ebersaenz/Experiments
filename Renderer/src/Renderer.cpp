@@ -8,15 +8,18 @@ void Renderer::startup(int width, int height) {
 
     loadShaders("textured", texturedShaderProgram);
 
-    // Setup matrices projection and view matrices
+    // Get uniform locations
     modelLocation = glGetUniformLocation(texturedShaderProgram, "modelMatrix");
     viewLocation = glGetUniformLocation(texturedShaderProgram, "viewMatrix");
     projLocation = glGetUniformLocation(texturedShaderProgram, "projMatrix");
     diffuseSamplerLocation = glGetUniformLocation(texturedShaderProgram, "diffuseSampler");
     normalSamplerLocation = glGetUniformLocation(texturedShaderProgram, "normalSampler");
-    hasDiffuseLocation = glGetUniformLocation(texturedShaderProgram, "hasDiffuse");
+    matValidityCheckLocation = glGetUniformLocation(texturedShaderProgram, "isValidMaterial");
+    lightDirectionLocation = glGetUniformLocation(texturedShaderProgram, "lightDir");
+    lightColorLocation = glGetUniformLocation(texturedShaderProgram, "lightColor");
+    viewPosLocation = glGetUniformLocation(texturedShaderProgram, "viewPos");
 
-    float aspect = windowWidth / windowHeight;
+    // Setup matrices projection and view matrices
     float aspect = (float) windowWidth / (float) windowHeight;
     projMatrix = vmath::perspective(50.0f, aspect, 0.1f, 1000.0f);
 
@@ -26,7 +29,7 @@ void Renderer::startup(int width, int height) {
     viewMatrix = vmath::lookat(cameraPos, cameraTarget, cameraUp);
 
     // Model load test
-    car = loadModel("../Assets/Models/mango.glb");
+    car = loadModel("../Assets/Models/haloSpartan2.glb");
 
     // OpenGL settings    
     glViewport(0, 0, windowWidth, windowHeight);
@@ -35,7 +38,7 @@ void Renderer::startup(int width, int height) {
     glEnable(GL_DEPTH_TEST);
     glFrontFace(GL_CCW);
     glDepthFunc(GL_LEQUAL);
-    glClearColor(0.1f, 0.2f, 0.2f, 1.0f);
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 }
 
 void Renderer::shutdown() {
@@ -69,6 +72,9 @@ void Renderer::runGameLoop(GLFWwindow* window)
 }
 
 void Renderer::render(double currentTime) {
+    static const GLfloat lightDirection[] = { -0.5f, -0.5f, -0.5f };    
+    static const GLfloat lightColor[] = { 1.0f, 1.0f, 1.0f };
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(texturedShaderProgram);
@@ -77,14 +83,19 @@ void Renderer::render(double currentTime) {
 
     // Draw car
     for (Mesh mesh : car.meshes) {
-        mesh.modelMatrix *= vmath::rotate<float>(0.0f, 0.0f, 60.0f * currentTime);
+        mesh.modelMatrix *= vmath::rotate<float>(0.0f, 60.0f * currentTime, 0.0f);
         glUniformMatrix4fv(modelLocation, 1, GL_FALSE, mesh.modelMatrix);
 
-        // Bind diffuse texture
+        // Set lighting uniforms
+        glUniform3fv(lightDirectionLocation, 1, lightDirection);
+        glUniform3fv(lightColorLocation, 1, lightColor);
+        glUniform3fv(viewPosLocation, 1, cameraPosition);
+
+        // Bind textures
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mesh.material.diffuseTextureId);
         glUniform1i(diffuseSamplerLocation, 0);
-        glUniform1i(hasDiffuseLocation, mesh.material.diffuseTextureId == -1 ? 0 : 1);
+        glUniform1i(matValidityCheckLocation, mesh.material.diffuseTextureId == -1 ? 0 : 1);
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, mesh.material.normalTextureId);
@@ -140,8 +151,8 @@ void Renderer::processNode(aiNode* node, const aiScene* scene, GameObject& gameO
         Mesh outputMesh;
         outputMesh.modelMatrix = getGlobalTransform(node, scene);
 
-        float s = 0.05f;
-        outputMesh.modelMatrix = vmath::translate(0.0f, -0.5f, 0.0f) * vmath::scale(s,s,s) * vmath::rotate(0.0f, 90.0f, 0.0f) * outputMesh.modelMatrix;
+        float s = 28.0f;
+        outputMesh.modelMatrix = vmath::translate(0.0f, -1.1f, 0.0f) * vmath::scale(s,s,s) * vmath::rotate(0.0f, 0.0f, 0.0f) * outputMesh.modelMatrix;
 
         processMesh(inputMesh, outputMesh);
 
@@ -182,6 +193,18 @@ void Renderer::processMesh(aiMesh* aiInputMesh, Mesh& outputMesh) {
             outputMesh.vertices.push_back(0.0f);
         }
 
+        // Tangents
+        if (aiInputMesh->HasTangentsAndBitangents()) {
+            outputMesh.vertices.push_back(aiInputMesh->mTangents[i].x);
+            outputMesh.vertices.push_back(aiInputMesh->mTangents[i].y);
+            outputMesh.vertices.push_back(aiInputMesh->mTangents[i].z);
+        }
+        else {
+            outputMesh.vertices.push_back(0.0f);
+            outputMesh.vertices.push_back(0.0f);
+            outputMesh.vertices.push_back(0.0f);
+        }
+
         // Texture coordinates
         if (aiInputMesh->mTextureCoords[0]) {
             outputMesh.vertices.push_back(aiInputMesh->mTextureCoords[0][i].x);
@@ -214,15 +237,20 @@ void Renderer::processMesh(aiMesh* aiInputMesh, Mesh& outputMesh) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, outputMesh.EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, outputMesh.indices.size() * sizeof(unsigned int), &outputMesh.indices[0], GL_STATIC_DRAW);
 
+    GLsizei stride = (3 + 3 + 3 + 2) * sizeof(float);
+
     // Specify the layout of the vertex data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, stride, (void*)(9 * sizeof(float)));
+    glEnableVertexAttribArray(3);
 
     glBindVertexArray(0);
 }

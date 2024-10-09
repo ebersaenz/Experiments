@@ -32,12 +32,18 @@ private:
     int windowWidth;
     int windowHeight;
     GLuint texturedShaderProgram;
+    
+    // Uniform locations
     GLint modelLocation;
     GLint viewLocation;
     GLint projLocation;
     GLint diffuseSamplerLocation;
     GLint normalSamplerLocation;
-    GLint hasDiffuseLocation;
+    GLint matValidityCheckLocation;
+    GLint lightDirectionLocation;
+    GLint lightColorLocation;
+    GLint viewPosLocation;
+
     vmath::mat4 projMatrix;
     vmath::mat4 viewMatrix;
     vmath::vec3 cameraPosition;

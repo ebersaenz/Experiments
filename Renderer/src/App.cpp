@@ -3,8 +3,8 @@
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    int windowWidth = 1200;
-    int windowHeight = 800;
+    int windowWidth = 800;
+    int windowHeight = 600;
 
     GLFWwindow* window = ES::CreateAppWindow(windowWidth, windowHeight, "Renderer");
 
