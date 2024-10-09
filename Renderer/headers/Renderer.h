@@ -9,7 +9,8 @@
 #include <map>
 
 struct Material {
-    int textureId; // Using -1 for meshes that don't use this texture
+    int diffuseTextureId; // Using -1 for meshes that don't use this texture
+    int normalTextureId;
 };
 
 struct Mesh {

@@ -25,7 +25,7 @@ void Renderer::startup(int width, int height) {
     viewMatrix = vmath::lookat(cameraPos, cameraTarget, cameraUp);
 
     // Model load test
-    car = loadModel("../Assets/Models/car.glb");
+    car = loadModel("../Assets/Models/mango.glb");
 
     // OpenGL settings    
     glViewport(0, 0, windowWidth, windowHeight);
@@ -34,6 +34,7 @@ void Renderer::startup(int width, int height) {
     glEnable(GL_DEPTH_TEST);
     glFrontFace(GL_CCW);
     glDepthFunc(GL_LEQUAL);
+    glClearColor(0.1f, 0.2f, 0.2f, 1.0f);
 }
 
 void Renderer::shutdown() {
@@ -67,11 +68,6 @@ void Renderer::runGameLoop(GLFWwindow* window)
 }
 
 void Renderer::render(double currentTime) {
-    static const GLfloat background_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    static const GLfloat one = 1.0f;
-
-    glClearBufferfv(GL_COLOR, 0, background_color);
-    glClearBufferfv(GL_DEPTH, 0, &one);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(texturedShaderProgram);
@@ -80,14 +76,18 @@ void Renderer::render(double currentTime) {
 
     // Draw car
     for (Mesh mesh : car.meshes) {
-        //mesh.modelMatrix = vmath::rotate<float>(0.0f, 20.0f * currentTime, 0.0f);
+        mesh.modelMatrix *= vmath::rotate<float>(0.0f, 0.0f, 60.0f * currentTime);
         glUniformMatrix4fv(modelLocation, 1, GL_FALSE, mesh.modelMatrix);
 
         // Bind diffuse texture
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, mesh.material.textureId);
+        glBindTexture(GL_TEXTURE_2D, mesh.material.diffuseTextureId);
         glUniform1i(diffuseSamplerLocation, 0);
-        glUniform1i(hasDiffuseLocation, mesh.material.textureId == -1 ? 0 : 1);
+        glUniform1i(hasDiffuseLocation, mesh.material.diffuseTextureId == -1 ? 0 : 1);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, mesh.material.normalTextureId);
+        glUniform1i(normalSamplerLocation, 1);
 
         // Bind the VAO and draw the mesh
         glBindVertexArray(mesh.VAO);
@@ -139,15 +139,16 @@ void Renderer::processNode(aiNode* node, const aiScene* scene, GameObject& gameO
         Mesh outputMesh;
         outputMesh.modelMatrix = getGlobalTransform(node, scene);
 
-        float s = 50.0f;
-        outputMesh.modelMatrix = vmath::translate(0.0f, 0.0f, 0.0f) * vmath::scale(s,s,s) * vmath::rotate(0.0f, 90.0f, 0.0f) * outputMesh.modelMatrix;
+        float s = 0.05f;
+        outputMesh.modelMatrix = vmath::translate(0.0f, -0.5f, 0.0f) * vmath::scale(s,s,s) * vmath::rotate(0.0f, 90.0f, 0.0f) * outputMesh.modelMatrix;
 
         processMesh(inputMesh, outputMesh);
 
         // Load texture
         if (inputMesh->mMaterialIndex >= 0) {
             aiMaterial* material = scene->mMaterials[inputMesh->mMaterialIndex];
-            outputMesh.material.textureId = loadEmbededTexture(material, scene, aiTextureType_DIFFUSE);
+            outputMesh.material.diffuseTextureId = loadEmbededTexture(material, scene, aiTextureType_DIFFUSE);
+            outputMesh.material.normalTextureId = loadEmbededTexture(material, scene, aiTextureType_NORMALS);
         }
 
         gameObject.meshes.push_back(outputMesh);
