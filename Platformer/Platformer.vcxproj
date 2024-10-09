@@ -557,17 +557,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Cube.cpp" />
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\Cube.h" />
     <ClInclude Include="headers\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\basic.fs.glsl" />
-    <None Include="shaders\basic.vs.glsl" />
     <None Include="shaders\textured.fs.glsl" />
     <None Include="shaders\textured.vs.glsl" />
   </ItemGroup>

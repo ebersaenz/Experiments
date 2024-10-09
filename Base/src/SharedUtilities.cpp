@@ -5,7 +5,7 @@ namespace ES {
     {        
         if (!glfwInit())
         {
-            fprintf(stderr, "Failed to initialize GLFW\n");
+            OutputDebugStringA("Failed to initialize GLFW\n");
             return NULL;
         }
 
@@ -22,7 +22,7 @@ namespace ES {
 
         if (!window)
         {
-            fprintf(stderr, "Failed to open window\n");
+            OutputDebugStringA("Failed to open window\n");
             return NULL;
         }
 

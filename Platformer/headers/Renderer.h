@@ -1,35 +1,54 @@
 #pragma once
-#include "../headers/Cube.h"
+#include "SharedUtilities.h"
+#include "vmath.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <string>
 #include <vector>
+#include <map>
+
+struct Material {
+    int textureId; // Using -1 for meshes that don't use this texture
+};
 
 struct Mesh {
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
-    unsigned int VAO, VBO, EBO;
-    unsigned int textureId;
+    GLuint VAO, VBO, EBO;
+    Material material;
+    vmath::mat4 modelMatrix;
+};
+
+struct GameObject {
+    std::vector<Mesh> meshes;
+    vmath::mat4 transformMatrix;
 };
 
 class Renderer {
 private:
+    int tempCounter = 0;
     int windowWidth;
     int windowHeight;
-    GLuint basicShaderProgram;
     GLuint texturedShaderProgram;
-    GLuint vao;
-    GLuint buffer;
-    GLint model_location;
-    GLint view_location;
-    GLint proj_location;
-    GLint model_location2;
-    GLint view_location2;
-    GLint proj_location2;
-    vmath::mat4 proj_matrix;
-    vmath::mat4 view_matrix;
-    vmath::vec3 camera_position;
-    Mesh spiderMesh;
+    GLint modelLocation;
+    GLint viewLocation;
+    GLint projLocation;
+    GLint diffuseSamplerLocation;
+    GLint normalSamplerLocation;
+    GLint hasDiffuseLocation;
+    vmath::mat4 projMatrix;
+    vmath::mat4 viewMatrix;
+    vmath::vec3 cameraPosition;
+    GameObject car;
+    std::map<std::string, GLuint> currentModelTextureIds; // Could be <int, int> if only loading glbs
+    std::vector<GLuint> allUsedTextureIds;
 
     void loadShaders(std::string shaderName, GLuint& programId);
+    GLuint loadEmbededTexture(aiMaterial* material, const aiScene* scene, aiTextureType textureType);    GameObject loadModel(const std::string& path);
+    void processNode(aiNode* node, const aiScene* scene, GameObject& gameObject);
+    void processMesh(aiMesh* aiInputMesh, Mesh& outputMesh);
+    vmath::mat4 getGlobalTransform(aiNode* node, const aiScene* scene);
 
 public:
     void startup(int width, int height);
