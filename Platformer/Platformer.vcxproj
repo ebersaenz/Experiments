@@ -72,6 +72,7 @@
     <ProjectGuid>{d5c01eb5-64a9-493f-af89-bfeb108b3290}</ProjectGuid>
     <RootNamespace>Platformer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Renderer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

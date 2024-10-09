@@ -6,7 +6,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     int windowWidth = 1200;
     int windowHeight = 800;
 
-    GLFWwindow* window = ES::CreateAppWindow(windowWidth, windowHeight, "Platformer");
+    GLFWwindow* window = ES::CreateAppWindow(windowWidth, windowHeight, "Renderer");
 
     if (window == NULL)
     {
