@@ -29,7 +29,7 @@ void Renderer::startup(int width, int height) {
     viewMatrix = vmath::lookat(cameraPos, cameraTarget, cameraUp);
 
     // Model load test
-    car = loadModel("../Assets/Models/haloSpartan2.glb");
+    gameObject = loadModel("../Assets/Models/haloSpartan2.glb");
 
     // OpenGL settings    
     glViewport(0, 0, windowWidth, windowHeight);
@@ -42,7 +42,7 @@ void Renderer::startup(int width, int height) {
 }
 
 void Renderer::shutdown() {
-    for (Mesh mesh : car.meshes) {
+    for (Mesh mesh : gameObject.meshes) {
         glDeleteProgram(texturedShaderProgram);
         glDeleteVertexArrays(1, &mesh.VAO);
         glDeleteBuffers(1, &mesh.VBO);
@@ -81,8 +81,8 @@ void Renderer::render(double currentTime) {
     glUniformMatrix4fv(projLocation, 1, GL_FALSE, projMatrix);
     glUniformMatrix4fv(viewLocation, 1, GL_FALSE, viewMatrix);
 
-    // Draw car
-    for (Mesh mesh : car.meshes) {
+    // Draw gameObject
+    for (Mesh mesh : gameObject.meshes) {
         mesh.modelMatrix *= vmath::rotate<float>(0.0f, 60.0f * currentTime, 0.0f);
         glUniformMatrix4fv(modelLocation, 1, GL_FALSE, mesh.modelMatrix);
 

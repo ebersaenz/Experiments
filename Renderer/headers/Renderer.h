@@ -47,7 +47,7 @@ private:
     vmath::mat4 projMatrix;
     vmath::mat4 viewMatrix;
     vmath::vec3 cameraPosition;
-    GameObject car;
+    GameObject gameObject;
     std::map<std::string, GLuint> currentModelTextureIds; // Could be <int, int> if only loading glbs
     std::vector<GLuint> allUsedTextureIds;
 
