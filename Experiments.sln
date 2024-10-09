@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TriangleTest", "TriangleTes
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpinningCubes", "SpinningCubes\SpinningCubes.vcxproj", "{63D92EC4-6FC2-4CB0-82BE-D7242E95328F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Platformer", "Platformer\Platformer.vcxproj", "{D5C01EB5-64A9-493F-AF89-BFEB108B3290}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Renderer", "Renderer\Renderer.vcxproj", "{D5C01EB5-64A9-493F-AF89-BFEB108B3290}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
